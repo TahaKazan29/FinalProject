@@ -12,6 +12,7 @@ using FluentValidation;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Business.BusinessAspects.Autofac;
 using Core.Aspects.Autofac.Transaction;
 using Core.Utilities.Business;
 using Microsoft.EntityFrameworkCore.Internal;
@@ -29,10 +30,11 @@ namespace Business.Concrete
             _categoryService = categoryService;
         }
 
+        [SecuredOperation("product.add,admin")]
         [ValidationAspect(typeof(ProductValidator))]
         public IResult Add(Product product)
         {
-            IResult result = BusinessRules.Run(CheckIfProductNameExists(product.ProductName),
+            IResult result = BusinessRule.Run(CheckIfProductNameExists(product.ProductName),
                 CheckIfProductCountOfCategoryCorrect(product.CategoryId), CheckIfCategoryLimitExceded());
 
             if (result!=null)
@@ -59,7 +61,7 @@ namespace Business.Concrete
 
         public IDataResult<List<Product>> GetAll()
         {
-            if (DateTime.Now.Hour == 1)
+            if (DateTime.Now.Hour == 0)
             {
                 return new ErrorDataResult<List<Product>>(Messages.MaintenanceTime);
             }
