@@ -32,7 +32,7 @@ namespace Business.Concrete
             _categoryService = categoryService;
         }
 
-        [SecuredOperation("product.add,admin")]
+        //[SecuredOperation("product.add,admin")]
         [ValidationAspect(typeof(ProductValidator))]
         [CacheRemoveAspect("IProductService.Get")]
         public IResult Add(Product product)
@@ -55,7 +55,7 @@ namespace Business.Concrete
             if (CheckIfProductCountOfCategoryCorrect(product.CategoryId).Success)
             {
                 if (CheckIfProductNameExists(product.ProductName).Success)
-                {
+                { 
                     _productDal.Update(product);
                     return new SuccessResult(Messages.ProductUpdate);
                 }
